@@ -1,0 +1,11 @@
+# global configuration
+maximum_files: 3
+maximum_age: 7
+
+# individual directory configurations
+directories:
+- path: "/home/"
+  maximum_files: 2
+- path: "/home/"
+  maximum_age: 3
+- maximum_age: 1
