@@ -6,6 +6,7 @@ DAY_SECONDS = 86400.0
 def file_expired(file_path, maximum_age):
     lastmod_ts = os.path.getmtime(file_path)
     current_ts = time.time()
+    print(lastmod_ts, current_ts)
     return ((current_ts - lastmod_ts) / 86400.0) > maximum_age
 
 def order_by_lastmod(file_paths):
