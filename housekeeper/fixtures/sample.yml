@@ -4,8 +4,8 @@ maximum_age: 7
 
 # individual directory configurations
 directories:
-- path: "/home/"
-  maximum_files: 2
-- path: "/home/"
+- path: "/tmp/"
+  maximum_files: 0
+- path: "/tmp/"
   maximum_age: 3
 - maximum_age: 1

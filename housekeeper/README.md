@@ -36,7 +36,18 @@ directories:
 
 ## How to run
 
-To run `housekeeper`, do
+### Unix
+To run `housekeeper` on a daily schedule on Unix systems, run
 ```sh
-python -m housekeeper <path-to-yml>
+crontab -e
+```
+and add the cron job
+```vi
+0 0 * * * cd <this-dir> && python -m housekeeper <yaml-path>
+```
+
+### Windows
+To run `housekeeper` on a daily schedule on Windows OS, run
+```sh
+schtasks /create /tn housekeeping /tr cd <this-dir> && python -m housekeeper <yaml-path> /sc daily
 ```

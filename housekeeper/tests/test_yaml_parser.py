@@ -2,6 +2,11 @@ import pytest
 
 from housekeeper import yaml_parser
 
+def test_set_fallback():
+    assert(yaml_parser.set_fallback(None, 1) == 1)
+    assert(yaml_parser.set_fallback(None, 0) == 0)
+    assert(yaml_parser.set_fallback(1, 0) == 1)
+
 @pytest.fixture
 def yaml(sample_yaml):
     return yaml_parser.YAMLParser(sample_yaml)

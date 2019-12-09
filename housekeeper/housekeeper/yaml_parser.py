@@ -1,7 +1,11 @@
 import logging
 import os
+import sys
 
 import yaml
+
+def set_fallback(value, fall_back):
+    return fall_back if value is None else value
 
 class YAMLParser:
     """
@@ -14,8 +18,10 @@ class YAMLParser:
         self.yaml_path = yaml_path
         with open(yaml_path, 'rt') as yaml_file:
             self.yaml_dict = yaml.safe_load(yaml_file.read())
-        self.maximum_files = self.yaml_dict.get('maximum_files')
-        self.maximum_age = self.yaml_dict.get('maximum_age')
+        self.maximum_files = set_fallback(self.yaml_dict.get('maximum_files'),
+                                          sys.maxsize)
+        self.maximum_age = set_fallback(self.yaml_dict.get('maximum_age'),
+                                        sys.maxsize)
         self.__parse_configurations()
     
     def __setup_logging(self):
@@ -23,7 +29,7 @@ class YAMLParser:
         self.logger.setLevel(self.verbosity)
         console = logging.StreamHandler()
         console.setLevel(self.verbosity)
-        log_format = '%(asctime)s | %(name)s [%(levelname)s] %(message)s'
+        log_format = '%(asctime)s | %(name)-12s [%(levelname)-8s] %(message)s'
         formatter = logging.Formatter(log_format)
         console.setFormatter(formatter)
         self.logger.handlers = [console]
@@ -34,12 +40,11 @@ class YAMLParser:
         for folder in directories:
             folder_path = folder.get('path')
             if folder_path is None or not os.path.isdir(folder_path):
-                self.logger.warning(f'Removed {folder_path} from directories.')
+                self.logger.warning(f'Removed {folder_path} from config.')
                 continue
-            else:
-                folder['maximum_files'] = folder.get('maximum_files') \
-                    or self.maximum_files
-                folder['maximum_age'] = folder.get('maximum_age') \
-                    or self.maximum_age
-                directory_configs.append(folder)
+            folder['maximum_files'] = set_fallback(folder.get('maximum_files'), 
+                                                   self.maximum_files)
+            folder['maximum_age'] = set_fallback(folder.get('maximum_age'),
+                                                 self.maximum_age)
+            directory_configs.append(folder)
         self.configurations = directory_configs
