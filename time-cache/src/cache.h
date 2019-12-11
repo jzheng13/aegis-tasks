@@ -14,8 +14,8 @@ typedef struct time_cache {
 
 TimeCache create_timecache(size_t capacity, size_t ttl);
 
-char** remove_expired_items(TimeCache time_cache);
-
-
+char** remove_expired_items_from_cache(TimeCache time_cache);
+size_t cache_size(TimeCache time_cache);
+char ** cache_items(TimeCache time_cache);
 
 #endif
