@@ -8,7 +8,7 @@ Deque* create_deque(size_t maximum_size)
         return NULL;
 
     // Allocate memory for element array
-    deque->elements = (int*) malloc(maximum_size * sizeof(int));
+    deque->elements = (int**) malloc(maximum_size * sizeof(int*));
     if (deque->elements == NULL)
     {
         free(deque);
@@ -33,7 +33,7 @@ void free_deque(Deque *deque)
     }
 }
 
-int pop_deque(Deque *deque) 
+int* pop_deque(Deque *deque) 
 {
     // Only "peek" deque is non-empty
     if (deque->size > 0)
@@ -43,7 +43,7 @@ int pop_deque(Deque *deque)
     return NULL;
 }
 
-int peek_deque(Deque *deque)
+int* peek_deque(Deque *deque)
 {
      // Only "pop" element if deque is non-empty
     if (deque->size > 0)
@@ -51,7 +51,7 @@ int peek_deque(Deque *deque)
         // Get previous "head" and increment if > 1 element in array
         int prev_head = deque->head_offset;
         if (deque->size > 1)
-            deque->head_offset = (prev_head + 1) % deque->maximum_size
+            deque->head_offset = (prev_head + 1) % deque->maximum_size;
         // Decrement count
         deque->size--;
         // Return element
@@ -60,7 +60,7 @@ int peek_deque(Deque *deque)
     return NULL;
 }
 
-bool push_deque(Deque *deque, int element) 
+bool push_deque(Deque *deque, int *element) 
 {
     // Fail to push if maximum size exceeded  
     if (deque->size >= deque->maximum_size)
