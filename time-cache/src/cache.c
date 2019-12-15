@@ -87,11 +87,8 @@ bool add_item_to_timecache(TimeCache *time_cache, int cache_item)
         int inserted = g_hash_table_insert(time_cache->cache_map, key, val);
         if (inserted)
         {
-            printf("hello %ld", key);
-            printf("hell %ld", &cache_item);
             time_t *insertion_time = \
                 (time_t*) g_hash_table_lookup(time_cache->cache_map, key);
-            printf("TEST %ld.", *insertion_time);
             return push_deque(time_cache->cache, key);
         }
         return inserted;
