@@ -1,18 +1,22 @@
 #ifndef DEQUE_H
 #define DEQUE_H
 
+#include <math.h>
+#include <stdbool.h>
+#include <stddef.h>
+
 typedef struct deque {
-    char ** elements;
+    int *elements;
     int head_offset;
     int tail_offset;
     size_t maximum_size;
     size_t size;
 } Deque;
 
-Deque create_deque(size_t maximum_size);
-char* pop_deque(Deque deque);
-char* push_deque(Deque deque, char* element);
-size_t deque_size(Deque deque);
-char** deque_elements(Deque deque);
+Deque* create_deque(size_t maximum_size);
+void free_deque(Deque *deque)
+int pop_deque(Deque *deque);
+int peek_deque(Deque *deque);
+bool push_deque(Deque *deque, int element);
 
 #endif
