@@ -14,6 +14,7 @@ void* check_cache(void *args)
 {
     TimeCache* time_cache = (TimeCache *) args;
     size_t num_expired;
+
     while(true)
     {
         pthread_mutex_lock(&mutex);
@@ -22,6 +23,7 @@ void* check_cache(void *args)
             printf("Removed %u expired items.\n", num_expired);
         pthread_mutex_unlock(&mutex);
     }
+    
     pthread_exit(EXIT_SUCCESS);
 }
 
