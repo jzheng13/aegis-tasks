@@ -140,7 +140,7 @@ void list_timecache_info(TimeCache *time_cache)
 
     for (int i = 0; i < size; i++)
     {
-        int index = head + i;
+        int index = (head + i) % time_cache->capacity;
         int *element = time_cache->cache->elements[index];
         time_t *insertion_time = \
             (time_t*) g_hash_table_lookup(time_cache->cache_map, element);
