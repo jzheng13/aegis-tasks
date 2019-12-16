@@ -8,7 +8,7 @@ TimeCache* create_timecache(size_t capacity, size_t ttl)
         return NULL;
 
     // Allocate memory for hash map
-    GHashTable *hash_table = g_hash_table_new_full(NULL, 
+    GHashTable *hash_table = g_hash_table_new_full(g_int_hash, 
                                                    g_int_equal, 
                                                    free, 
                                                    free);
@@ -61,13 +61,29 @@ int** timecache_items(TimeCache *time_cache)
 
 bool add_item_to_timecache(TimeCache *time_cache, int cache_item) 
 {
+    int *key = (int*) malloc(sizeof(int));
+    if (key == NULL)
+    {
+        return false;
+    }
+    *key = cache_item;
+
+    // Skip cache if item already exists
+    if (g_hash_table_contains(time_cache->cache_map, key))
+    {
+        printf("Item %d already cached.\n", cache_item);
+        free(key);
+        return false;
+    }
+
     // Pop oldest element if cache is at or past capacity
     if (timecache_size(time_cache) >= time_cache->capacity) {
-        int *oldest_item = peek_deque(time_cache->cache);
-        if (oldest_item != NULL)
+        int *oldest = peek_deque(time_cache->cache);
+        if (oldest != NULL)
         {
-            g_hash_table_remove(time_cache->cache_map, oldest_item);
-            pop_deque(time_cache->cache);  
+            g_hash_table_remove(time_cache->cache_map, oldest);
+            pop_deque(time_cache->cache);
+            printf("Cache limit has exceeded. %d has been removed.\n", *oldest);
         } 
         else 
         {
@@ -78,22 +94,24 @@ bool add_item_to_timecache(TimeCache *time_cache, int cache_item)
     }
 
     // Insert cache item to cache with timestamp of insertion
-    int *key = (int*) malloc(sizeof(int));
     gpointer *val = (gpointer*) malloc(sizeof(time_t));
-    if ((key != NULL) && (val != NULL))
+    if (val == NULL)
     {
-        *key = cache_item;
-        *val = time(NULL);
-        int inserted = g_hash_table_insert(time_cache->cache_map, key, val);
-        if (inserted)
-        {
-            time_t *insertion_time = \
-                (time_t*) g_hash_table_lookup(time_cache->cache_map, key);
-            return push_deque(time_cache->cache, key);
-        }
-        return inserted;
+        free(key);
+        return false;
     }
-    return false;
+    
+    *val = time(NULL);
+    int inserted = g_hash_table_insert(time_cache->cache_map, key, val);
+    if (inserted)
+    {
+        time_t *insertion_time = \
+            (time_t*) g_hash_table_lookup(time_cache->cache_map, key);
+        return push_deque(time_cache->cache, key);
+    }
+    free(key);
+    free(val);
+    return inserted;
 }
 
 size_t remove_expired_items_from_timecache(TimeCache *time_cache)

@@ -50,11 +50,12 @@ to 30 seconds.
 To add an item to the cache, just type the item name after the program has
 started then press ENTER. You should see the following message
 ```sh
-<item-name> was added to the cache. The cache now has <cache-size> items:
-- <item-1>
-- <item-2>
+Add item <item-name> success.
+Cache is at m/n capacity.
+1. Item <item-1> inserted at <item-1-insertion-time>.
+2. Item <item-2> inserted at <item-2-insertion-time>.
 ...
-- <item-name>
+m. Item <item-m> inserted at <item-m-insertion-time>.
 ```
 
 ### Exceeding cache capacity
@@ -62,20 +63,24 @@ started then press ENTER. You should see the following message
 If the addition of this new item results in the purge of the oldest item, you
 should see
 ```sh
-<item-name> was added to the cache. Cache limit has exceeded. <item-1> has been 
-removed. The cache now has <cache-size> items:
-- <item-2>
-...
-- <item-name>
+Cache limit has exceeded. <item-1> has been removed. 
 ```
 
 ### Expiring cached item
 
 When an item has expired, you should see the following message
 ```sh
-<expired-item> has expired. The cache now has <cache-size> items:
-- <item-1>
-- <item-2>
-...
-- <item-cache-size>
+Removed x expired items.
 ```
+
+## Known issues and possible solutions
+
+If re-adding an existing element, insertion time should be refreshed. However,
+presently, we simply "read" from cache without extending TTL of the record. 
+
+We can go back to using just a hash table and update the hash value to solve
+this issue, but this will mean that we need to iterate over the entire hash
+table when trying to find expired items.
+
+(Technically speaking with the current implementation there is not much use for
+the hash map since we can just add another array as the insertion time.)
