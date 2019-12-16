@@ -18,6 +18,8 @@ void* check_cache(void *args)
     {
         pthread_mutex_lock(&mutex);
         num_expired = remove_expired_items_from_timecache(time_cache);
+        if (num_expired > 0)
+            printf("Removed %u expired items.\n", num_expired);
         pthread_mutex_unlock(&mutex);
     }
     pthread_exit(EXIT_SUCCESS);
@@ -57,7 +59,7 @@ void* read_stdin(void *args)
 
     if (buffer == NULL)
     {
-        perror("Unable to allocate buffer to read stdin inputs.");
+        perror("Unable to allocate buffer to read stdin inputs.\n");
         pthread_exit(EXIT_SUCCESS);
     }
 
@@ -119,7 +121,7 @@ int main(int argc, char *argv[])
 
     // Threads to simultaneously read cmdline inputs and clean up expired items
     pthread_create(&tid[0], NULL, read_stdin, (void*) time_cache);
-    //pthread_create(&tid[1], NULL, check_cache, (void*) time_cache);
+    pthread_create(&tid[1], NULL, check_cache, (void*) time_cache);
 
     // Wait for stdin program to complete
     pthread_join(tid[0], NULL);

@@ -114,9 +114,9 @@ size_t remove_expired_items_from_timecache(TimeCache *time_cache)
         if (insertion_time != NULL)
         {
             // Pop item from cache if expired
-            if (*insertion_time + time_cache->ttl < current_time)
+            if ((*insertion_time + time_cache->ttl) < current_time)
             {
-                if (pop_deque(time_cache->cache))
+                if (pop_deque(time_cache->cache) != NULL)
                 {
                     expired_items_removed++;
                 }

@@ -33,7 +33,7 @@ void free_deque(Deque *deque)
     }
 }
 
-int* pop_deque(Deque *deque) 
+int* peek_deque(Deque *deque) 
 {
     // Only "peek" deque is non-empty
     if (deque->size > 0)
@@ -43,7 +43,7 @@ int* pop_deque(Deque *deque)
     return NULL;
 }
 
-int* peek_deque(Deque *deque)
+int* pop_deque(Deque *deque)
 {
      // Only "pop" element if deque is non-empty
     if (deque->size > 0)
